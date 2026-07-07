@@ -1,0 +1,10 @@
+{
+	"InstallScripts" : 
+	[
+		"/home/braden/Documents/Programming/C/AquaExampleProject/build/cmake_install.cmake",
+		"/home/braden/Documents/Programming/C/AquaExampleProject/build/AquaEngine/cmake_install.cmake",
+		"/home/braden/Documents/Programming/C/AquaExampleProject/build/AquaEngine/external/cimgui/cmake_install.cmake",
+		"/home/braden/Documents/Programming/C/AquaExampleProject/build/AquaEngine/external/cglm/cmake_install.cmake"
+	],
+	"Parallel" : false
+}

@@ -1,0 +1,3 @@
+[submodule "AquaEngine"]
+	path = AquaEngine
+	url = https://github.com/snufflyyy/AquaEngine.git
