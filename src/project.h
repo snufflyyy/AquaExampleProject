@@ -7,6 +7,8 @@ typedef struct AquaExampleProject {
 
 	AquaMaterial* material;
 	AquaMeshHandle mesh;
+
+	AquaCamera camera;
 } AquaExampleProject;
 
 AquaExampleProject* aqua_example_project_create(void);

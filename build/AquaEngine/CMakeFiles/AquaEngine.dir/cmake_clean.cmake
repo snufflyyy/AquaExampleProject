@@ -7,6 +7,8 @@ file(REMOVE_RECURSE
   "CMakeFiles/AquaEngine.dir/src/aqua.c.o.d"
   "CMakeFiles/AquaEngine.dir/src/event/event.c.o"
   "CMakeFiles/AquaEngine.dir/src/event/event.c.o.d"
+  "CMakeFiles/AquaEngine.dir/src/gfx/camera/camera.c.o"
+  "CMakeFiles/AquaEngine.dir/src/gfx/camera/camera.c.o.d"
   "CMakeFiles/AquaEngine.dir/src/gfx/material/material.c.o"
   "CMakeFiles/AquaEngine.dir/src/gfx/material/material.c.o.d"
   "CMakeFiles/AquaEngine.dir/src/gfx/mesh/mesh.c.o"

@@ -1,4 +1,5 @@
 #include "project.h"
+#include "gfx/camera/camera.h"
 #include "gfx/material/material.h"
 #include "gfx/mesh/mesh.h"
 #include "gfx/renderer/renderer.h"
@@ -29,10 +30,12 @@ void initialize(AquaEngineContext* aqua_context) {
 
 	aqua_window_set_title(aqua_context->window, project_data->project.name);
 
-	AquaShaderHandle shader = aqua_renderer_resource_manager_create_shader(&aqua_context->renderer->resource_manager, "../aqua-engine/shaders/color/color.vert", "../aqua-engine/shaders/color/color.frag");
+	AquaShaderHandle shader = aqua_renderer_create_shader(aqua_context->renderer, "../AquaEngine/shaders/color/color.vert", "../AquaEngine/shaders/color/color.frag");
 	project_data->material = aqua_material_create(aqua_context->renderer, shader, (AquaColor) { 0.0f, 0.5f, 1.0f });
 
-	project_data->mesh = aqua_renderer_resource_manager_create_mesh(&aqua_context->renderer->resource_manager, QUAD_VERTICES, sizeof(QUAD_VERTICES) / sizeof(AquaVertex), QUAD_INDICES, sizeof(QUAD_INDICES) / sizeof(GLuint));
+	project_data->mesh = aqua_renderer_create_mesh(aqua_context->renderer, QUAD_VERTICES, sizeof(QUAD_VERTICES) / sizeof(AquaVertex), QUAD_INDICES, sizeof(QUAD_INDICES) / sizeof(GLuint));
+
+	project_data->camera = aqua_camera_create((vec3) { 0.0f, 0.0f, 0.0f }, glm_rad(70.0f), ((f32) aqua_context->window->properties.width / aqua_context->window->properties.height));
 }
 
 void event(AquaEngineContext* aqua_context, AquaEvent* event) {
@@ -55,7 +58,7 @@ void render(AquaEngineContext* aqua_context) {
 
 	aqua_renderer_clear();
 
-	aqua_renderer_draw_mesh(aqua_context->renderer, project_data->mesh, project_data->material);
+	aqua_renderer_draw_mesh(aqua_context->renderer, &project_data->camera, project_data->mesh, project_data->material);
 }
 
 void destroy(AquaEngineContext* aqua_context) {

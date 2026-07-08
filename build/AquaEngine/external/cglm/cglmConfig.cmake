@@ -7,7 +7,7 @@ if(CMAKE_VERSION VERSION_LESS "2.8.3")
    message(FATAL_ERROR "CMake >= 2.8.3 required")
 endif()
 cmake_policy(PUSH)
-cmake_policy(VERSION 2.8.3...3.31)
+cmake_policy(VERSION 2.8.3...4.1)
 #----------------------------------------------------------------
 # Generated CMake target import file.
 #----------------------------------------------------------------
@@ -50,14 +50,14 @@ unset(_cmake_expected_targets)
 add_library(cglm::cglm SHARED IMPORTED)
 
 set_target_properties(cglm::cglm PROPERTIES
-  INTERFACE_INCLUDE_DIRECTORIES "/home/braden/Documents/Programming/C/AquaExampleProject/AquaEngine/external/cglm/include"
+  INTERFACE_INCLUDE_DIRECTORIES "/Users/braden/Documents/Programming/C/AquaExampleProject/AquaEngine/external/cglm/include"
 )
 
 # Import target "cglm::cglm" for configuration "Debug"
 set_property(TARGET cglm::cglm APPEND PROPERTY IMPORTED_CONFIGURATIONS DEBUG)
 set_target_properties(cglm::cglm PROPERTIES
-  IMPORTED_LOCATION_DEBUG "/home/braden/Documents/Programming/C/AquaExampleProject/build/AquaEngine/external/cglm/libcglm.so.0.9.6"
-  IMPORTED_SONAME_DEBUG "libcglm.so.0"
+  IMPORTED_LOCATION_DEBUG "/Users/braden/Documents/Programming/C/AquaExampleProject/build/AquaEngine/external/cglm/libcglm.0.9.6.dylib"
+  IMPORTED_SONAME_DEBUG "@rpath/libcglm.0.dylib"
   )
 
 # This file does not depend on other imported targets which have
