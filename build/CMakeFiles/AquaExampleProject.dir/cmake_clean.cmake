@@ -1,4 +1,5 @@
 file(REMOVE_RECURSE
+  "CMakeFiles/AquaExampleProject.dir/link.d"
   "AquaExampleProject"
   "AquaExampleProject.pdb"
   "CMakeFiles/AquaExampleProject.dir/src/main.c.o"

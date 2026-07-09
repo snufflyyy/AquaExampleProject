@@ -1,4 +1,5 @@
 file(REMOVE_RECURSE
+  "CMakeFiles/cimgui.dir/link.d"
   "CMakeFiles/cimgui.dir/cimgui.cpp.o"
   "CMakeFiles/cimgui.dir/cimgui.cpp.o.d"
   "CMakeFiles/cimgui.dir/imgui/imgui.cpp.o"
@@ -11,8 +12,8 @@ file(REMOVE_RECURSE
   "CMakeFiles/cimgui.dir/imgui/imgui_tables.cpp.o.d"
   "CMakeFiles/cimgui.dir/imgui/imgui_widgets.cpp.o"
   "CMakeFiles/cimgui.dir/imgui/imgui_widgets.cpp.o.d"
-  "cimgui.dylib"
   "cimgui.pdb"
+  "cimgui.so"
 )
 
 # Per-language clean rules from dependency scanning.

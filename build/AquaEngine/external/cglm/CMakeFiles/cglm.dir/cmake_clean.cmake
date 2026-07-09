@@ -1,5 +1,6 @@
 file(REMOVE_RECURSE
   ".0"
+  "CMakeFiles/cglm.dir/link.d"
   "CMakeFiles/cglm.dir/src/aabb2d.c.o"
   "CMakeFiles/cglm.dir/src/aabb2d.c.o.d"
   "CMakeFiles/cglm.dir/src/affine.c.o"
@@ -92,10 +93,10 @@ file(REMOVE_RECURSE
   "CMakeFiles/cglm.dir/src/vec3.c.o.d"
   "CMakeFiles/cglm.dir/src/vec4.c.o"
   "CMakeFiles/cglm.dir/src/vec4.c.o.d"
-  "libcglm.0.9.6.dylib"
-  "libcglm.0.dylib"
-  "libcglm.dylib"
   "libcglm.pdb"
+  "libcglm.so"
+  "libcglm.so.0"
+  "libcglm.so.0.9.6"
 )
 
 # Per-language clean rules from dependency scanning.

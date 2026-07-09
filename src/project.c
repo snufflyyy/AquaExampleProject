@@ -1,9 +1,8 @@
 #include "project.h"
+#include "event/event.h"
 #include "gfx/camera/camera.h"
 #include "gfx/material/material.h"
-#include "gfx/mesh/mesh.h"
 #include "gfx/renderer/renderer.h"
-#include "gfx/renderer/resource-manager.h"
 #include "gfx/shader/shader.h"
 
 #include <aqua.h>
@@ -36,11 +35,34 @@ void initialize(AquaEngineContext* aqua_context) {
 	project_data->mesh = aqua_renderer_create_mesh(aqua_context->renderer, QUAD_VERTICES, sizeof(QUAD_VERTICES) / sizeof(AquaVertex), QUAD_INDICES, sizeof(QUAD_INDICES) / sizeof(GLuint));
 
 	project_data->camera = aqua_camera_create((vec3) { 0.0f, 0.0f, 0.0f }, glm_rad(70.0f), ((f32) aqua_context->window->properties.width / aqua_context->window->properties.height));
+
+	project_data->camera_pitch = 0.0f;
+	project_data->camera_yaw = 0.0f;
+
+	project_data->mouse_sensitivity = 0.2f;
 }
 
 void event(AquaEngineContext* aqua_context, AquaEvent* event) {
 	AquaExampleProject* project_data = (AquaExampleProject*) aqua_context->project.project_data_ptr;
 
+	switch (event->type) {
+	    case AQUA_EVENT_TYPE_MOUSE_MOTION: {
+			project_data->camera_yaw += (event->mouse_motion.x_relative * project_data->mouse_sensitivity);
+			project_data->camera_pitch -= (event->mouse_motion.y_relative * project_data->mouse_sensitivity);
+
+			if (project_data->camera_pitch > 89.0f) { project_data->camera_pitch = 89.0f; }
+			if (project_data->camera_pitch < -89.0f) { project_data->camera_pitch = -89.0f; }
+
+			vec3 direction = {
+                cosf(glm_rad(project_data->camera_yaw)) * cosf(glm_rad(project_data->camera_pitch)),
+                sinf(glm_rad(project_data->camera_pitch)),
+                sinf(glm_rad(project_data->camera_yaw)) * cosf(glm_rad(project_data->camera_pitch)),
+            };
+            glm_normalize(direction);
+            glm_vec3_copy(direction, project_data->camera.front);
+		} break;
+		default: break;
+	}
 }
 
 void tick(AquaEngineContext* aqua_context) {
@@ -51,6 +73,7 @@ void tick(AquaEngineContext* aqua_context) {
 void update(AquaEngineContext* aqua_context) {
 	AquaExampleProject* project_data = (AquaExampleProject*) aqua_context->project.project_data_ptr;
 
+	aqua_camera_update(&project_data->camera);
 }
 
 void render(AquaEngineContext* aqua_context) {
@@ -64,6 +87,7 @@ void render(AquaEngineContext* aqua_context) {
 void destroy(AquaEngineContext* aqua_context) {
 	AquaExampleProject* project_data = (AquaExampleProject*) aqua_context->project.project_data_ptr;
 
+	aqua_material_destroy(project_data->material);
 }
 
 AquaExampleProject* aqua_example_project_create(void) {

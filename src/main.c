@@ -14,10 +14,13 @@ int main(void) {
 	AquaEngineContext* aqua_context = aqua_engine_context_create(&example_project->project, AQUA_ENGINE_CONTEXT_DEFAULT_INITIALIZE_PROPERTIES);
 	if (!aqua_context) {
 		fprintf(stderr, "[ERROR] [Aqua Example Project] Failed to create aqua engine context!\n");
+		aqua_example_project_destroy(example_project);
 		return -1;
 	}
 
 	aqua_engine_run(aqua_context);
 	aqua_engine_context_destroy(aqua_context);
 	aqua_example_project_destroy(example_project);
+
+	return 0;
 }

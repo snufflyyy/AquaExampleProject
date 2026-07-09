@@ -1,2 +1,2 @@
-/usr/bin/ar qc libglad.a CMakeFiles/glad.dir/external/glad/src/glad.c.o
-/usr/bin/ranlib libglad.a
+/nix/store/xcnqqnhw9hb4j5rjgds2yjryi8qki5f3-gcc-wrapper-15.2.0/bin/ar qc libglad.a CMakeFiles/glad.dir/external/glad/src/glad.c.o
+/nix/store/xcnqqnhw9hb4j5rjgds2yjryi8qki5f3-gcc-wrapper-15.2.0/bin/ranlib libglad.a
