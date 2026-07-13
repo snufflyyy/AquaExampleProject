@@ -4,6 +4,7 @@
 #include "gfx/material/material.h"
 #include "gfx/renderer/renderer.h"
 #include "gfx/shader/shader.h"
+#include "input/input.h"
 
 #include <aqua.h>
 
@@ -46,20 +47,30 @@ void event(AquaEngineContext* aqua_context, AquaEvent* event) {
 	AquaExampleProject* project_data = (AquaExampleProject*) aqua_context->project.project_data_ptr;
 
 	switch (event->type) {
+		case AQUA_EVENT_TYPE_KEY_DOWN: {
+			switch (event->key.scancode) {
+				case AQUA_SCANCODE_ESCAPE: {
+					aqua_input_manager_set_mouse_captured(&aqua_context->input_manager, !aqua_context->input_manager.properties.mouse_captured);
+				} break;
+				default: break;
+			}
+		} break;
 	    case AQUA_EVENT_TYPE_MOUSE_MOTION: {
-			project_data->camera_yaw += (event->mouse_motion.x_relative * project_data->mouse_sensitivity);
-			project_data->camera_pitch -= (event->mouse_motion.y_relative * project_data->mouse_sensitivity);
+			if (aqua_context->input_manager.properties.mouse_captured) {
+				project_data->camera_yaw += (event->mouse_motion.x_relative * project_data->mouse_sensitivity);
+				project_data->camera_pitch -= (event->mouse_motion.y_relative * project_data->mouse_sensitivity);
 
-			if (project_data->camera_pitch > 89.0f) { project_data->camera_pitch = 89.0f; }
-			if (project_data->camera_pitch < -89.0f) { project_data->camera_pitch = -89.0f; }
+				if (project_data->camera_pitch > 89.0f) { project_data->camera_pitch = 89.0f; }
+				if (project_data->camera_pitch < -89.0f) { project_data->camera_pitch = -89.0f; }
 
-			vec3 direction = {
-                cosf(glm_rad(project_data->camera_yaw)) * cosf(glm_rad(project_data->camera_pitch)),
-                sinf(glm_rad(project_data->camera_pitch)),
-                sinf(glm_rad(project_data->camera_yaw)) * cosf(glm_rad(project_data->camera_pitch)),
-            };
-            glm_normalize(direction);
-            glm_vec3_copy(direction, project_data->camera.front);
+				vec3 direction = {
+	                cosf(glm_rad(project_data->camera_yaw)) * cosf(glm_rad(project_data->camera_pitch)),
+	                sinf(glm_rad(project_data->camera_pitch)),
+	                sinf(glm_rad(project_data->camera_yaw)) * cosf(glm_rad(project_data->camera_pitch)),
+	            };
+	            glm_normalize(direction);
+	            glm_vec3_copy(direction, project_data->camera.front);
+			}
 		} break;
 		default: break;
 	}
