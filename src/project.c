@@ -5,9 +5,9 @@
 #include "gfx/material/material.h"
 #include "gfx/mesh/mesh.h"
 #include "gfx/renderer/renderer.h"
-#include "gfx/shader/shader.h"
 #include "gfx/texture/texture.h"
 #include "input/input.h"
+#include "model/model.h"
 
 #include <aqua.h>
 
@@ -15,18 +15,6 @@
 #include <stdbool.h>
 #include <stdio.h>
 #include <stdlib.h>
-
-static AquaVertex QUAD_VERTICES[4] = {
-    { { -0.5f, -0.5f, 0.0f }, { 0.0f, 0.0f, 1.0f }, { 0.0f, 0.0f } }, // bottom-left
-    { {  0.5f, -0.5f, 0.0f }, { 0.0f, 0.0f, 1.0f }, { 1.0f, 0.0f } }, // bottom-right
-    { {  0.5f,  0.5f, 0.0f }, { 0.0f, 0.0f, 1.0f }, { 1.0f, 1.0f } }, // top-right
-    { { -0.5f,  0.5f, 0.0f }, { 0.0f, 0.0f, 1.0f }, { 0.0f, 1.0f } }  // top-left
-};
-
-static GLuint QUAD_INDICES[6] = {
-    0, 1, 2,
-    2, 3, 0
-};
 
 bool initialize(AquaEngineContext* aqua_context) {
 	AquaExampleProject* project_data = (AquaExampleProject*) aqua_context->project->project_data_ptr;
@@ -41,18 +29,16 @@ bool initialize(AquaEngineContext* aqua_context) {
 		return false;
 	}
 
-	project_data->mesh = aqua_renderer_create_mesh(aqua_context->renderer, QUAD_VERTICES, sizeof(QUAD_VERTICES) / sizeof(AquaVertex), QUAD_INDICES, sizeof(QUAD_INDICES) / sizeof(GLuint));
-	if (project_data->mesh == AQUA_MESH_HANDLE_INVALID) {
-		fprintf(stderr, "[ERROR] [Aqua Example Project] Failed to create mesh!\n");
-		return false;
-	}
+	project_data->model = aqua_model_create(aqua_context->renderer, "../assets/CommercialRefrigerator.glb");
 
-	project_data->camera = aqua_camera_create((vec3) { 0.0f, 0.0f, 0.0f }, glm_rad(70.0f), ((f32) aqua_context->window->properties.width / aqua_context->window->properties.height));
+	project_data->camera = aqua_camera_create((vec3) { 0.0f, 0.0f, 1.0f }, glm_rad(70.0f), ((f32) aqua_context->window->properties.width / (f32) aqua_context->window->properties.height));
 
 	project_data->camera_pitch = 0.0f;
 	project_data->camera_yaw = -90.0f;
 
 	project_data->mouse_sensitivity = 0.2f;
+
+	project_data->camera_move_speed = 0.5f;
 
 	return true;
 }
@@ -66,6 +52,20 @@ void event(AquaEngineContext* aqua_context, AquaEvent* event) {
 				case AQUA_SCANCODE_ESCAPE: {
 					aqua_input_manager_set_mouse_captured(&aqua_context->input_manager, !aqua_context->input_manager.properties.mouse_captured);
 				} break;
+
+				case AQUA_SCANCODE_W: { project_data->forward_pressed = true; } break;
+				case AQUA_SCANCODE_A: { project_data->left_pressed = true; } break;
+				case AQUA_SCANCODE_S: { project_data->backward_pressed = true; } break;
+				case AQUA_SCANCODE_D: { project_data->right_pressed = true; } break;
+				default: break;
+			}
+		} break;
+		case AQUA_EVENT_TYPE_KEY_UP: {
+		    switch (event->key.scancode) {
+				case AQUA_SCANCODE_W: { project_data->forward_pressed = false; } break;
+				case AQUA_SCANCODE_A: { project_data->left_pressed = false; } break;
+				case AQUA_SCANCODE_S: { project_data->backward_pressed = false; } break;
+				case AQUA_SCANCODE_D: { project_data->right_pressed = false; } break;
 				default: break;
 			}
 		} break;
@@ -87,7 +87,7 @@ void event(AquaEngineContext* aqua_context, AquaEvent* event) {
 			}
 		} break;
 		case AQUA_EVENT_TYPE_WINDOW_RESIZED: {
-			aqua_camera_update_aspect(&project_data->camera, (f32) event->window.new_width / event->window.new_height);
+			aqua_camera_update_aspect(&project_data->camera, (f32) event->window.new_width / (f32) event->window.new_height);
 		} break;
 		default: break;
 	}
@@ -101,6 +101,30 @@ void tick(AquaEngineContext* aqua_context) {
 void update(AquaEngineContext* aqua_context) {
 	AquaExampleProject* project_data = (AquaExampleProject*) aqua_context->project->project_data_ptr;
 
+   	f32 move_speed_dt = project_data->camera_move_speed * (f32) aqua_context->renderer->delta_time;
+    if (project_data->forward_pressed) {
+            vec3 forward;
+            glm_vec3_scale(project_data->camera.front, move_speed_dt, forward);
+            glm_vec3_add(project_data->camera.position, forward, project_data->camera.position);
+    }
+    if (project_data->backward_pressed) {
+            vec3 backward;
+            glm_vec3_scale(project_data->camera.front, move_speed_dt, backward);
+            glm_vec3_sub(project_data->camera.position, backward, project_data->camera.position);
+    }
+    if (project_data->left_pressed) {
+    vec3 left;
+            glm_vec3_crossn(project_data->camera.front, project_data->camera.up, left);
+            glm_vec3_scale(left, move_speed_dt, left);
+            glm_vec3_sub(project_data->camera.position, left, project_data->camera.position);
+    }
+    if (project_data->right_pressed) {
+    vec3 right;
+            glm_vec3_crossn(project_data->camera.front, project_data->camera.up, right);
+            glm_vec3_scale(right, move_speed_dt, right);
+            glm_vec3_add(project_data->camera.position, right, project_data->camera.position);
+    }
+
 	aqua_camera_update(&project_data->camera);
 }
 
@@ -109,7 +133,14 @@ void render(AquaEngineContext* aqua_context) {
 
 	aqua_renderer_clear();
 
-	aqua_renderer_draw_mesh(aqua_context->renderer, &project_data->camera, project_data->mesh, project_data->material);
+	aqua_renderer_bind_camera(aqua_context->renderer, &project_data->camera);
+
+	for (usize i = 0; i < project_data->model.submeshes_count; i++) {
+        AquaSubMesh* submesh = &project_data->model.submeshes[i];
+
+        aqua_renderer_bind_material(aqua_context->renderer, project_data->material);
+        aqua_renderer_draw_submesh(aqua_context->renderer, submesh->mesh, submesh->indices_start, submesh->indices_count);
+	}
 }
 
 void imgui_properties_window(AquaEngineContext* aqua_context) {
