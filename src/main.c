@@ -2,6 +2,7 @@
 
 #include <aqua.h>
 
+#include "gfx/window/window.h"
 #include "project.h"
 
 int main(void) {

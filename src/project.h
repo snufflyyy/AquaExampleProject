@@ -1,23 +1,14 @@
 #pragma once
 
 #include "aqua.h"
-#include "model/model.h"
+#include "fly-camera/fly-camera.h"
 
 typedef struct AquaExampleProject {
 	AquaProject project;
 
-	AquaMaterial* material;
-	AquaModel model;
+	AquaFlyCamera fly_camera;
 
-	AquaCamera camera;
-	f32 camera_yaw, camera_pitch;
-	f32 mouse_sensitivity;
-	f32 camera_move_speed;
-
-	bool forward_pressed;
-	bool backward_pressed;
-	bool left_pressed;
-	bool right_pressed;
+	AquaStaticModel model;
 } AquaExampleProject;
 
 AquaExampleProject* aqua_example_project_create(void);
