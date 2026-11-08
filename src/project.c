@@ -2,10 +2,7 @@
 #include "cimgui.h"
 #include "event/event.h"
 #include "fly-camera/fly-camera.h"
-#include "gfx/camera/camera.h"
-#include "gfx/material/material.h"
 #include "gfx/renderer/renderer.h"
-#include "gfx/texture/texture.h"
 #include "gfx/window/window.h"
 #include "input/input.h"
 #include "gfx/model/model.h"
@@ -25,7 +22,12 @@ bool initialize(AquaEngineContext* aqua_context) {
 
 	project_data->fly_camera = aqua_fly_camera_create((vec3) { 0.0f, 0.0f, 1.0f }, 70.0f, ((f32) aqua_context->window->properties.width / (f32) aqua_context->window->properties.height));
 
-	project_data->model = aqua_model_create(aqua_context->renderer, "../assets/CommercialRefrigerator.glb");
+	project_data->model = aqua_model_create(aqua_context->renderer, "assets/sh1-school.glb");
+
+	glm_vec3_zero(project_data->model_position);
+	glm_vec3_zero(project_data->model_rotation);
+	glm_vec3_one(project_data->model_scale);
+	aqua_model_set_transform(&project_data->model, project_data->model_position, project_data->model_rotation, project_data->model_scale);
 
 	return true;
 }
@@ -75,6 +77,20 @@ void imgui_properties_window(AquaEngineContext* aqua_context) {
 	AquaExampleProject* project_data = (AquaExampleProject*) aqua_context->project->project_data_ptr;
 
 	igBegin("Aqua Example Project Properties", &project_data->project.show_properties_window, ImGuiWindowFlags_None);
+	igSeparatorText("Model Transform");
+	bool changed = false;
+	changed |= igDragFloat3("Position", project_data->model_position, 0.05f, 0.0f, 0.0f, "%0.2f", ImGuiSliderFlags_None);
+	changed |= igDragFloat3("Rotation", project_data->model_rotation, 0.5f, 0.0f, 0.0f, "%0.1f deg", ImGuiSliderFlags_None);
+	changed |= igDragFloat3("Scale", project_data->model_scale, 0.01f, 0.0f, 0.0f, "%0.2f", ImGuiSliderFlags_None);
+	if (igButton("Reset", (ImVec2) { 0.0f, 0.0f })) {
+		glm_vec3_zero(project_data->model_position);
+		glm_vec3_zero(project_data->model_rotation);
+		glm_vec3_one(project_data->model_scale);
+		changed = true;
+	}
+	if (changed) {
+		aqua_model_set_transform(&project_data->model, project_data->model_position, project_data->model_rotation, project_data->model_scale);
+	}
 	igEnd();
 }
 
@@ -89,6 +105,8 @@ void imgui_update(AquaEngineContext* aqua_context) {
 void destroy(AquaEngineContext* aqua_context) {
 	AquaExampleProject* project_data = (AquaExampleProject*) aqua_context->project->project_data_ptr;
 
+	aqua_model_destroy(aqua_context->renderer, &project_data->model);
+	aqua_fly_camera_destroy(&project_data->fly_camera);
 }
 
 AquaExampleProject* aqua_example_project_create(void) {
