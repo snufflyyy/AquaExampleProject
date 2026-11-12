@@ -14,11 +14,14 @@ add_executable(
 	src/project.c
 )
 
-target_link_libraries(${PROJECT_NAME} PRIVATE AquaEngine)
+# This example opts into custom cimgui UI; ordinary projects only need AquaEngine.
+target_link_libraries(${PROJECT_NAME} PRIVATE AquaEngine AquaEngineDebug)
 
 target_compile_options(${PROJECT_NAME} PRIVATE
 	-Wall -Wextra -Wpedantic
 	-Wconversion -Wshadow -Wstrict-prototypes -Wformat=2 -Wnull-dereference
+	-Wmissing-prototypes
+	-Werror
 )
 
 target_compile_definitions(${PROJECT_NAME} PRIVATE

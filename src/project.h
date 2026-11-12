@@ -1,18 +1,24 @@
 #pragma once
 
-#include "aqua.h"
+#include <aqua.h>
 
-#include "fly-camera/fly-camera.h"
+#define AQUA_EXAMPLE_PROJECT_MODEL_INSTANCE_COUNT 2
+
+typedef struct AquaExampleModelInstance {
+	AquaModelInstance instance;
+	vec3 position;
+	vec3 rotation; // Euler XYZ, degrees
+	vec3 scale;
+} AquaExampleModelInstance;
 
 typedef struct AquaExampleProject {
 	AquaProject project;
 
-	AquaFlyCamera fly_camera;
+	AquaFlyCamera* fly_camera;
 
-	AquaStaticModel model;
-	vec3 model_position;
-	vec3 model_rotation; // euler XYZ, degrees
-	vec3 model_scale;
+	AquaModelHandle model;
+	AquaExampleModelInstance model_instances[AQUA_EXAMPLE_PROJECT_MODEL_INSTANCE_COUNT];
+	int selected_model_instance;
 } AquaExampleProject;
 
 AquaExampleProject* aqua_example_project_create(void);
